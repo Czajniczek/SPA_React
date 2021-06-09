@@ -25,7 +25,11 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Client>>> GetClients()
         {
-            return await _context.Clients.ToListAsync();
+            return await _context.Clients
+                .Include(x => x.Orders)
+                .ThenInclude(x => x.Book)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         // GET: api/Clients/5

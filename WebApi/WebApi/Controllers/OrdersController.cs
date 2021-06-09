@@ -21,12 +21,20 @@ namespace WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Orders
+        //GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.Include(b => b.Book).Include(c => c.Client).AsNoTracking().ToListAsync();
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetOrders()
+        //{
+        //    var list = await _context.Orders.Include(b => b.Book).Include(c => c.Client).ToListAsync();
+
+        //    return Ok(list);
+        //}
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
