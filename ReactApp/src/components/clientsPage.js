@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { apiClient } from "../apiClient/apiClient"
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-const MainPage = () => {
+const ClientsPage = () => {
     const [loading, setLoading] = useState(false)
     const [values, setValues] = useState([])
 
     useEffect(() => {
-        apiClient.get("/Home/All")
+        apiClient.get("/api/Clients")
             .then(resp => {
                 const { data } = resp
                 setValues(data)
@@ -17,7 +18,7 @@ const MainPage = () => {
     if (!loading) {
         return (
             <div>
-                <p>Loading...</p>
+                <CircularProgress style={{ height: 80, width: 80, marginLeft: "auto", marginRight: "auto", display: "flex", marginTop: 200 }} />
             </div>
         )
     }
@@ -26,7 +27,7 @@ const MainPage = () => {
         <div>
             {values.map((elem, index) => {
                 return (
-                    <p>{elem} {index}</p>
+                    <p key={elem.clientId}>{elem.name} {index}</p>
                 )
             })
             }
@@ -34,4 +35,4 @@ const MainPage = () => {
     )
 }
 
-export default MainPage
+export default ClientsPage
