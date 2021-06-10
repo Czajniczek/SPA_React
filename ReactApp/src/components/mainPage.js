@@ -3,14 +3,29 @@ import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
-import { makeStyles, withStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles'
+//import { makeStyles, withStyles } from '@material-ui/styles'
 import { apiClient } from "../apiClient/apiClient"
 import { DataGrid, isOverflown } from '@material-ui/data-grid'
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress'
 import '../Style.css'
-import { Button } from '@material-ui/core'
+// import { Button } from '@material-ui/core'
 import { useHistory } from 'react-router'
+import IconButton from '@material-ui/core/IconButton'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
 
+//#region Own styles
+// const StyledButton = withStyles({
+//     root: {
+//         '&:hover': {
+//             backgroundColor: 'red'
+//         }
+//     }
+// })(Button)
+//#endregion Own styles
+
+//#region Expand cell renderer
 const useStyles = makeStyles(() => ({
     root: {
         alignItems: 'center',
@@ -26,14 +41,6 @@ const useStyles = makeStyles(() => ({
         },
     },
 }))
-
-const StyledButton = withStyles({
-    root: {
-        '&:hover': {
-            backgroundColor: 'red'
-        }
-    }
-})(Button)
 
 const GridCellExpand = React.memo(function GridCellExpand(props) {
     const { width, value } = props;
@@ -120,12 +127,14 @@ renderCellExpand.propTypes = {
         PropTypes.bool,
     ]),
 };
+//#endregion Expand cell renderer
 
 const BooksPage = () => {
     const [loading, setLoading] = useState(false)
     const [values, setValues] = useState([])
     const history = useHistory()
 
+    //#region Load data from API
     useEffect(() => {
         apiClient.get("/api/Books")
             .then(resp => {
@@ -142,44 +151,9 @@ const BooksPage = () => {
             </div>
         )
     }
+    //#endregion Load data from API
 
-    const getRowButton = ({ value }) => {
-        return (
-            <div style={{ display: 'flex', flexShrink: 1, flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
-                <StyledButton onClick={() => handleEdit(value)}>
-                    EDIT
-                </StyledButton>
-                <StyledButton onClick={() => handleDelete(value)}>
-                    DELETE
-                </StyledButton>
-            </div>
-        )
-    }
-
-    const handleEdit = (value) => {
-        // debugger;
-        var book = values.filter(x => x.bookId === value);
-
-        history.push('/BookEdit', { book })
-    }
-
-    const handleDelete = (value) => {
-        apiClient.delete(`/api/Books/${value}`)
-            .then(resp => {
-                if (resp.status === 204) {
-                    //Wywalenie z tablicy książek
-                    const index = values.findIndex(x => x.bookId === value)
-                    if (index != -1) {
-                        setValues(prev => {
-                            let local = prev
-                            local.splice(index, 1)
-                            return [...local]
-                        })
-                    }
-                }
-            })
-    }
-
+    //#region Create columns and rows for table
     const columns = [
         // { field: 'id', headerName: 'ID', width: 100, headerAlign: 'center', align: 'center' },
         { field: 'title', headerName: 'Title', width: 150, type: 'string', headerAlign: 'center', align: 'center' },
@@ -194,9 +168,9 @@ const BooksPage = () => {
         },
         { field: 'publicationDate', headerName: 'Publication', width: 150, type: 'date', headerAlign: 'center', align: 'center' },
         { field: 'publisher', headerName: 'Publisher', width: 140, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'description', headerName: 'Description', width: 300, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
-        { field: 'id', disableClickEventBubbling: true, headerName: 'Actions', width: 200, headerAlign: 'center', renderCell: (params) => getRowButton(params) }
-    ];
+        { field: 'description', headerName: 'Description', width: 400, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
+        { field: 'id', headerName: 'Actions', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
+    ]
 
     for (let book of values) {
         book.publicationDate = book.publicationDate.slice(0, 4)
@@ -212,10 +186,57 @@ const BooksPage = () => {
         publisher: book.publisher,
         description: book.description,
     }))
+    //#endregion Create columns and rows for table
+
+    //#region Create action buttons
+    const getRowButton = ({ value }) => {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {/* <div style={{ display: 'flex', flexShrink: 1, flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
+                <StyledButton onClick={() => handleEdit(value)}>
+                    EDIT
+                </StyledButton>
+                <StyledButton onClick={() => handleDelete(value)}>
+                    DELETE
+                </StyledButton> */}
+                <IconButton aria-label="edit" onClick={() => handleEdit(value)}>
+                    <EditIcon />
+                </IconButton>
+                <IconButton aria-label="delete" onClick={() => handleDelete(value)}>
+                    <DeleteIcon />
+                </IconButton>
+            </div>
+        )
+    }
+    //#endregion Create action buttons
+
+    //#region Handle actions (CREATE, EDIT, DELETE)
+    const handleEdit = (value) => {
+        var book = values.filter(x => x.bookId === value);
+
+        history.push('/BookEdit', { book })
+    }
+
+    const handleDelete = (value) => {
+        apiClient.delete(`/api/Books/${value}`)
+            .then(resp => {
+                if (resp.status === 204) {
+                    const index = values.findIndex(x => x.bookId === value)
+                    if (index !== -1) {
+                        setValues(prev => {
+                            let local = prev
+                            local.splice(index, 1)
+                            return [...local]
+                        })
+                    }
+                }
+            })
+    }
+    //#endregion Handle actions (CREATE, EDIT, DELETE)
 
     return (
         <div style={{ height: 300, width: 'auto', margin: 20 }}>
-            <DataGrid rows={rows} columns={columns} pageSize={5} autoHeight />
+            <DataGrid rows={rows} columns={columns} pageSize={10} autoHeight />
         </div>
     )
 }
