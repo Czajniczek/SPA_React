@@ -9,10 +9,12 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { KeyboardDatePicker } from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import { pl } from 'date-fns/locale'
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from '@material-ui/icons/Save'
 //#endregion Imports
 
+//#region Main function
 const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
+    //#region Form
     const categories = ["Liryka", "Epika", "Dramat"]
 
     const initialValues = {
@@ -34,7 +36,9 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
         publisher: Yup.string().max(30, "The maximum length of the title is 30 characters!").required("Publisher is required!"),
         description: Yup.string().max(1000, "The maximum length of the title is 1000 characters!").required("Description is required!"),
     })
+    //#endregion Form
 
+    //#region Submit form
     const submitForm = values => {
         if (isEdit) {
             apiClient.put(`/api/Books/${initValues.bookId}`, { ...initValues, ...values })
@@ -55,6 +59,7 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                 })
         }
     }
+    //#endregion Submit form
 
     return (
         <Formik
@@ -146,5 +151,6 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
         </Formik>
     )
 }
+//#endregion Main function
 
 export default BookAddEdit

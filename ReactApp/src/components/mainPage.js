@@ -11,14 +11,14 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
 import { Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import BookAddEdit from "./bookAddEdit"
 import { format } from 'date-fns'
 //#endregion Imports
 
-//#region Own styles
+//#region Styles
 // const StyledButton = withStyles({
 //     root: {
 //         '&:hover': {
@@ -35,8 +35,7 @@ import { format } from 'date-fns'
 //         }
 //     }
 // }))
-
-//#endregion Own styles
+//#endregion Styles
 
 //#region Expand cell renderer
 const useStyles = makeStyles(() => ({
@@ -142,6 +141,7 @@ renderCellExpand.propTypes = {
 };
 //#endregion Expand cell renderer
 
+//#region Main function
 const BooksPage = () => {
     //#region Hooks
     const [loading, setLoading] = useState(false)
@@ -159,13 +159,14 @@ const BooksPage = () => {
                 setValues(data)
                 setLoading(true)
             })
+            .catch(err => console.log(err))
     }, [])
 
     if (!loading) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '200px' }}>
                 <CircularProgress style={{ height: 80, width: 80 }} />
-                <h3>Loading data ...</h3>
+                <h3>Loading books data ...</h3>
             </div>
         )
     }
@@ -186,7 +187,7 @@ const BooksPage = () => {
         },
         { field: 'publicationDate', headerName: 'Publication', width: 150, type: 'date', headerAlign: 'center', align: 'center' },
         { field: 'publisher', headerName: 'Publisher', width: 140, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'description', headerName: 'Description', width: 260, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
+        { field: 'description', headerName: 'Description', width: 250, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
         { field: 'id', headerName: 'Action', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
 
@@ -297,5 +298,6 @@ const BooksPage = () => {
         </div>
     )
 }
+//#endregion Main function
 
 export default BooksPage
