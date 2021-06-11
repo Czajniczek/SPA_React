@@ -70,7 +70,7 @@ namespace WebApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(book);
         }
 
         // POST: api/Books
@@ -81,7 +81,8 @@ namespace WebApi.Controllers
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBook", new { id = book.BookId }, book);
+            return Ok(book);
+            //return CreatedAtAction("GetBook", new { id = book.BookId }, book);
         }
 
         // DELETE: api/Books/5

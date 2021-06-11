@@ -35,10 +35,10 @@ const ClientsPage = () => {
     const columns = [
         // { field: 'id', headerName: 'ID', width: 100, headerAlign: 'center', align: 'center' },
         { field: 'name', headerName: 'Name', width: 150, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'surname', headerName: 'Surname', width: 150, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'adress', headerName: 'Adress', width: 150, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'phoneNumber', headerName: 'Phone number', width: 190, type: 'date', headerAlign: 'center', align: 'center' },
-        { field: 'email', headerName: 'E-mail', width: 220, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'surname', headerName: 'Surname', width: 230, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'adress', headerName: 'Adress', width: 250, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'phoneNumber', headerName: 'Phone number', width: 170, type: 'date', headerAlign: 'center', align: 'center' },
+        { field: 'email', headerName: 'E-mail', width: 300, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'id', headerName: 'Actions', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
 
@@ -100,7 +100,7 @@ const ClientsPage = () => {
 
     return (
         <div>
-            <div style={{ height: 300, width: 1000, marginLeft: 'auto', marginRight: 'auto', marginTop: 20 }}>
+            <div style={{ width: 'auto', margin: '20px' }}>
                 <DataGrid rows={rows} columns={columns} pageSize={10} autoHeight />
             </div>
         </div>
