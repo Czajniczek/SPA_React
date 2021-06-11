@@ -74,7 +74,8 @@ namespace WebApi.Controllers
                 }
             }
 
-            return NoContent();
+            //return NoContent();
+            return Ok(client);
         }
 
         // POST: api/Clients
@@ -85,7 +86,8 @@ namespace WebApi.Controllers
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetClient", new { id = client.ClientId }, client);
+            //return CreatedAtAction("GetClient", new { id = client.ClientId }, client);
+            return Ok(client);
         }
 
         // DELETE: api/Clients/5

@@ -1,16 +1,26 @@
+//#region Imports
 import React, { useState, useEffect } from 'react'
 import { apiClient } from "../apiClient/apiClient"
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { DataGrid } from '@material-ui/data-grid'
-import { useHistory } from 'react-router'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import { Dialog, DialogTitle, DialogContent } from '@material-ui/core'
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
+import ClientAddEdit from './clientAddEdit'
+//#endregion Imports
 
+//#region Main function
 const ClientsPage = () => {
+    //#region Hooks
     const [loading, setLoading] = useState(false)
     const [values, setValues] = useState([])
-    const history = useHistory()
+    const [showModal, setShowModal] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
+    const [edited, setEdited] = useState({})
+    //#endregion Hooks
 
     //#region Load data from API
     useEffect(() => {
@@ -24,8 +34,9 @@ const ClientsPage = () => {
 
     if (!loading) {
         return (
-            <div>
-                <CircularProgress style={{ height: 80, width: 80, marginLeft: "auto", marginRight: "auto", display: "flex", marginTop: 200 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '200px' }}>
+                <CircularProgress style={{ height: 80, width: 80 }} />
+                <h3>Loading clients data ...</h3>
             </div>
         )
     }
@@ -38,8 +49,8 @@ const ClientsPage = () => {
         { field: 'surname', headerName: 'Surname', width: 230, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'adress', headerName: 'Adress', width: 250, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'phoneNumber', headerName: 'Phone number', width: 170, type: 'date', headerAlign: 'center', align: 'center' },
-        { field: 'email', headerName: 'E-mail', width: 300, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'id', headerName: 'Actions', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
+        { field: 'email', headerName: 'E-mail', width: 290, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'id', headerName: 'Action', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
 
     const rows = values.map((client) => ({
@@ -56,13 +67,6 @@ const ClientsPage = () => {
     const getRowButton = ({ value }) => {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                {/* <div style={{ display: 'flex', flexShrink: 1, flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
-                <StyledButton onClick={() => handleEdit(value)}>
-                    EDIT
-                </StyledButton>
-                <StyledButton onClick={() => handleDelete(value)}>
-                    DELETE
-                </StyledButton> */}
                 <IconButton aria-label="edit" onClick={() => handleEdit(value)}>
                     <EditIcon />
                 </IconButton>
@@ -75,10 +79,40 @@ const ClientsPage = () => {
     //#endregion Create action buttons
 
     //#region Handle actions (CREATE, EDIT, DELETE)
+    const handleAdd = () => {
+        setEdited({})
+        setIsEdit(false)
+        setShowModal(true)
+    }
+
+    const handleAddClientModal = (values) => {
+        setShowModal(false)
+        setValues(prev => {
+            return [...prev, values]
+        })
+    }
+
     const handleEdit = (value) => {
         var client = values.filter(x => x.clientId === value);
+        setEdited(client[0])
+        setIsEdit(true)
+        setShowModal(true)
+    }
 
-        history.push('/ClientEdit', { client })
+    const handleEditClientModal = (values) => {
+        // debugger;
+        setShowModal(false)
+        setValues(prev => {
+            let local = prev
+            let index = local.findIndex(x => x.clientId === values.clientId)
+
+            if (index !== -1) {
+                local.splice(index, 1, values)
+                return [...local]
+            }
+
+            return [...local]
+        })
     }
 
     const handleDelete = (value) => {
@@ -99,12 +133,32 @@ const ClientsPage = () => {
     //#endregion Handle actions (CREATE, EDIT, DELETE)
 
     return (
-        <div>
-            <div style={{ width: 'auto', margin: '20px' }}>
-                <DataGrid rows={rows} columns={columns} pageSize={10} autoHeight />
-            </div>
+        <div style={{ width: 'auto', margin: '20px' }}>
+            <Dialog
+                open={showModal}
+                maxWidth='xs'
+                fullWidth={true}
+                onBackdropClick={() => setShowModal(false)}
+                onEscapeKeyDown={() => setShowModal(false)}
+            >
+                <DialogTitle>
+                    {isEdit ? "EDIT CLIENT" : "ADD CLIENT"}
+                </DialogTitle>
+                <DialogContent>
+                    <ClientAddEdit
+                        initValues={edited}
+                        isEdit={isEdit}
+                        closeModal={isEdit ? handleEditClientModal : handleAddClientModal}
+                    />
+                </DialogContent>
+            </Dialog>
+            <DataGrid rows={rows} columns={columns} pageSize={10} autoHeight />
+            <Fab color="primary" aria-label="Add client" onClick={handleAdd} style={{ position: 'fixed', bottom: '32px', right: '32px' }}>
+                <AddIcon />
+            </Fab>
         </div>
     )
 }
+//#endregion Main function
 
 export default ClientsPage
