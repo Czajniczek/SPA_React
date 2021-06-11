@@ -1,19 +1,23 @@
+//#region Imports
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
 import { makeStyles } from '@material-ui/styles'
-//import { makeStyles, withStyles } from '@material-ui/styles'
 import { apiClient } from "../apiClient/apiClient"
 import { DataGrid, isOverflown } from '@material-ui/data-grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import '../Style.css'
-// import { Button } from '@material-ui/core'
-import { useHistory } from 'react-router'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import { Dialog, DialogTitle, DialogContent } from '@material-ui/core'
+import BookAddEdit from "./bookAddEdit"
+import { format } from 'date-fns'
+//#endregion Imports
 
 //#region Own styles
 // const StyledButton = withStyles({
@@ -23,6 +27,16 @@ import EditIcon from '@material-ui/icons/Edit'
 //         }
 //     }
 // })(Button)
+
+// const useStyles = makeStyles(() => ({
+//     root: {
+//         '&.MuiTypography-h6': {
+//             fontWeight: 'bold',
+//             textAlign: 'center'
+//         }
+//     }
+// }))
+
 //#endregion Own styles
 
 //#region Expand cell renderer
@@ -130,9 +144,13 @@ renderCellExpand.propTypes = {
 //#endregion Expand cell renderer
 
 const BooksPage = () => {
+    //#region Hooks
     const [loading, setLoading] = useState(false)
     const [values, setValues] = useState([])
-    const history = useHistory()
+    const [showModal, setShowModal] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
+    const [edited, setEdited] = useState({})
+    //#endregion Hooks
 
     //#region Load data from API
     useEffect(() => {
@@ -146,8 +164,9 @@ const BooksPage = () => {
 
     if (!loading) {
         return (
-            <div>
-                <CircularProgress style={{ height: 80, width: 80, marginLeft: "auto", marginRight: "auto", display: "flex", marginTop: 200 }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '200px' }}>
+                <CircularProgress style={{ height: 80, width: 80 }} />
+                <h3>Loading data ...</h3>
             </div>
         )
     }
@@ -168,13 +187,9 @@ const BooksPage = () => {
         },
         { field: 'publicationDate', headerName: 'Publication', width: 150, type: 'date', headerAlign: 'center', align: 'center' },
         { field: 'publisher', headerName: 'Publisher', width: 140, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'description', headerName: 'Description', width: 400, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
-        { field: 'id', headerName: 'Actions', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
+        { field: 'description', headerName: 'Description', width: 260, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
+        { field: 'id', headerName: 'Action', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
-
-    for (let book of values) {
-        book.publicationDate = book.publicationDate.slice(0, 4)
-    }
 
     const rows = values.map((book) => ({
         id: book.bookId,
@@ -182,7 +197,7 @@ const BooksPage = () => {
         title: book.title,
         category: book.category,
         cost: book.cost,
-        publicationDate: book.publicationDate,
+        publicationDate: format(new Date(book.publicationDate), 'dd-MM-yyyy'),
         publisher: book.publisher,
         description: book.description,
     }))
@@ -192,13 +207,6 @@ const BooksPage = () => {
     const getRowButton = ({ value }) => {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                {/* <div style={{ display: 'flex', flexShrink: 1, flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
-                <StyledButton onClick={() => handleEdit(value)}>
-                    EDIT
-                </StyledButton>
-                <StyledButton onClick={() => handleDelete(value)}>
-                    DELETE
-                </StyledButton> */}
                 <IconButton aria-label="edit" onClick={() => handleEdit(value)}>
                     <EditIcon />
                 </IconButton>
@@ -211,10 +219,39 @@ const BooksPage = () => {
     //#endregion Create action buttons
 
     //#region Handle actions (CREATE, EDIT, DELETE)
+    const handleAdd = () => {
+        setEdited({})
+        setIsEdit(false)
+        setShowModal(true)
+    }
+
+    const handleAddBookModal = (values) => {
+        setShowModal(false)
+        setValues(prev => {
+            return [...prev, values]
+        })
+    }
+
     const handleEdit = (value) => {
         var book = values.filter(x => x.bookId === value);
+        setEdited(book[0])
+        setIsEdit(true)
+        setShowModal(true)
+    }
 
-        history.push('/BookEdit', { book })
+    const handleEditBookModal = (values) => {
+        setShowModal(false)
+        setValues(prev => {
+            let local = prev
+            let index = local.findIndex(x => x.bookId === values.bookId)
+
+            if (index !== -1) {
+                local.splice(index, 1, values)
+                return [...local]
+            }
+
+            return [...local]
+        })
     }
 
     const handleDelete = (value) => {
@@ -235,8 +272,29 @@ const BooksPage = () => {
     //#endregion Handle actions (CREATE, EDIT, DELETE)
 
     return (
-        <div style={{ height: 300, width: 'auto', margin: 20 }}>
+        <div style={{ width: 'auto', margin: '20px' }}>
+            <Dialog
+                open={showModal}
+                maxWidth='sm'
+                fullWidth={true}
+                onBackdropClick={() => setShowModal(false)}
+                onEscapeKeyDown={() => setShowModal(false)}
+            >
+                <DialogTitle>
+                    {isEdit ? "EDIT BOOK" : "ADD BOOK"}
+                </DialogTitle>
+                <DialogContent>
+                    <BookAddEdit
+                        initValues={edited}
+                        isEdit={isEdit}
+                        closeModal={isEdit ? handleEditBookModal : handleAddBookModal}
+                    />
+                </DialogContent>
+            </Dialog>
             <DataGrid rows={rows} columns={columns} pageSize={10} autoHeight />
+            <Fab color="primary" aria-label="Add book" onClick={handleAdd} style={{ position: 'fixed', bottom: '32px', right: '32px' }}>
+                <AddIcon />
+            </Fab>
         </div>
     )
 }
