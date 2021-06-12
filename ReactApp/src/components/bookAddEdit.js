@@ -15,6 +15,10 @@ import SaveIcon from '@material-ui/icons/Save'
 //#region Main function
 const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
     //#region Form
+    // console.log(initValues)
+    // console.log(isEdit)
+    // console.log(closeModal)
+
     const categories = ["Liryka", "Epika", "Dramat"]
 
     const initialValues = {

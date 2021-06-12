@@ -9,29 +9,32 @@ import { apiClient } from '../apiClient/apiClient'
 //#endregion Imports
 
 //#region Main function
-const ClientAddEdit = ({ initValues, isEdit, closeModal }) => {
+const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
     //#region Form
+    console.log(initValues)
+    console.log(isEdit)
+    console.log(closeModal)
+
     const initialValues = {
-        name: initValues.name,
-        surname: initValues.surname,
-        adress: initValues.adress,
-        phoneNumber: initValues.phoneNumber,
-        email: initValues.email
+        clientName: initValues.client?.name + " " + initValues.client?.surname,
+        bookTitle: initValues.book?.title,
+        orderDate: new Date(),
+        count: initValues.count ?? 0,
+        cost: initValues.book?.cost ?? 0,
+        total: initValues.count * initValues.book?.cost ?? 0
     }
 
     const validationSchema = Yup.object({
-        name: Yup.string().max(20, "The maximum length of the title is 20 characters!").required("Name is required!"),
-        surname: Yup.string().max(30, "The maximum length of the surname is 30 characters!").required("Surname is required!"),
-        adress: Yup.string().max(30, "The maximum length of the adress is 20 characters!").required("Adress is required!"),
-        phoneNumber: Yup.string().max(9, "The phone number must consist of 9 digits!").min(9, "The phone number must consist of 9 digits!").required("Phone number is required!"),
-        email: Yup.string().max(30, "The maximum length of the e-mail is 20 characters!").required("E-mail is required!"),
+        clientName: Yup.string().required("Client is required!"),
+        bookTitle: Yup.string().required("Book is required!"),
+        count: Yup.number().moreThan(0, "The number of books must be greater than 0!").required("Count is required!"),
     })
     //#endregion Form
 
     //#region Submit form
     const submitForm = values => {
         if (isEdit) {
-            apiClient.put(`/api/Clients/${initValues.clientId}`, { ...initValues, ...values })
+            apiClient.put(`/api/Orders/${initValues.orderId}`, { ...initValues, ...values })
                 .then(resp => {
                     if (resp.status === 200) {
                         const { data } = resp
@@ -40,7 +43,7 @@ const ClientAddEdit = ({ initValues, isEdit, closeModal }) => {
                 })
         }
         else {
-            apiClient.post('/api/Clients', values)
+            apiClient.post('/api/Orders', values)
                 .then(resp => {
                     if (resp.status === 200) {
                         const { data } = resp
@@ -116,4 +119,4 @@ const ClientAddEdit = ({ initValues, isEdit, closeModal }) => {
 }
 //#endregion Main function
 
-export default ClientAddEdit
+export default OrderAddEdit
