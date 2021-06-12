@@ -25,7 +25,11 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.Include(b => b.Book).Include(c => c.Client).AsNoTracking().ToListAsync();
+            return await _context.Orders
+                .Include(b => b.Book)
+                .Include(c => c.Client)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         //[HttpGet]
