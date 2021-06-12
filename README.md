@@ -1,2 +1,2 @@
 # SPA_React
-Single page application in React
+A simple book rental service written using the React library.
