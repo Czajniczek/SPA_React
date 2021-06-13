@@ -120,7 +120,6 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 <KeyboardDatePicker
                                     // name='publicationDate'
                                     value={formik.values.publicationDate}
-                                    // views={['year', 'month', 'day']}
                                     onChange={(date) => formik.setFieldValue('publicationDate', date)}
                                     format='dd-MM-yyyy'
                                 />

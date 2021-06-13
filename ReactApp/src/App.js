@@ -1,3 +1,4 @@
+//#region Imports
 import { BrowserRouter, Route } from 'react-router-dom'
 import SearchBar from "./components/searchBar"
 import MainPage from "./components/mainPage"
@@ -6,7 +7,9 @@ import OrdersPage from "./components/ordersPage"
 // import ClientEdit from "./components/clientEdit"
 // import BookAdd from "./components/bookAdd"
 // import BookEdit from "./components/bookEdit"
+//#endregion Imports
 
+//#region Main function
 function App() {
   return (
     <div>
@@ -22,5 +25,6 @@ function App() {
     </div>
   )
 }
+//#endregion Main function
 
-export default App;
+export default App
