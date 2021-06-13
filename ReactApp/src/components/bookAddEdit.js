@@ -77,6 +77,7 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                     return (
                         <Form style={{ marginBottom: '16px', background: 'white', display: 'flex', flexDirection: 'column' }}>
                             <FormikTextField
+                                style={{ marginTop: '0px' }}
                                 type='text'
                                 id='title'
                                 name='title'
@@ -84,6 +85,7 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 margin='normal'
                             />
                             <FormikTextField
+                                style={{ marginTop: '0px' }}
                                 type='text'
                                 id='author'
                                 name='author'
@@ -118,13 +120,13 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 utils={DateFnsUtils}
                             >
                                 <KeyboardDatePicker
-                                    // name='publicationDate'
                                     value={formik.values.publicationDate}
                                     onChange={(date) => formik.setFieldValue('publicationDate', date)}
                                     format='dd-MM-yyyy'
                                 />
                             </MuiPickersUtilsProvider>
                             <FormikTextField
+                                style={{ marginTop: '10px' }}
                                 type='text'
                                 id='publisher'
                                 name='publisher'
@@ -132,12 +134,13 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 margin='normal'
                             />
                             <Field
+                                style={{ marginTop: '5px' }}
                                 id='description'
                                 name='description'
                                 label='Description'
                                 margin='normal'
                                 component='textarea'
-                                rows='15'
+                                rows='12'
                             />
                             <Button
                                 style={{ marginTop: 20, width: '120px', marginLeft: 'auto', marginRight: 'auto' }}

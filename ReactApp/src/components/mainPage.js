@@ -187,7 +187,7 @@ const BooksPage = () => {
         },
         { field: 'publicationDate', headerName: 'Publication', width: 150, type: 'date', headerAlign: 'center', align: 'center' },
         { field: 'publisher', headerName: 'Publisher', width: 140, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'description', headerName: 'Description', width: 250, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
+        { field: 'description', headerName: 'Description', width: 260, type: 'string', headerAlign: 'center', align: 'center', renderCell: renderCellExpand },
         { field: 'id', headerName: 'Action', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
 
@@ -273,6 +273,7 @@ const BooksPage = () => {
 
     return (
         <div style={{ width: 'auto', margin: '20px' }}>
+            <h1 style={{ display: 'flex', justifyContent: 'center', fontFamily: 'Ubuntu', fontSize: '35px', marginTop: '0px', marginBottom: '20px' }}>BOOKS</h1>
             <Dialog
                 open={showModal}
                 maxWidth='sm'
@@ -280,7 +281,7 @@ const BooksPage = () => {
                 onBackdropClick={() => setShowModal(false)}
                 onEscapeKeyDown={() => setShowModal(false)}
             >
-                <DialogTitle>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>
                     {isEdit ? "EDIT BOOK" : "ADD BOOK"}
                 </DialogTitle>
                 <DialogContent>

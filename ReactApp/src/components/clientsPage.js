@@ -49,7 +49,7 @@ const ClientsPage = () => {
         { field: 'surname', headerName: 'Surname', width: 230, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'adress', headerName: 'Adress', width: 250, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'phoneNumber', headerName: 'Phone number', width: 170, type: 'date', headerAlign: 'center', align: 'center' },
-        { field: 'email', headerName: 'E-mail', width: 290, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'email', headerName: 'E-mail', width: 300, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'id', headerName: 'Action', width: 130, headerAlign: 'center', align: 'center', disableClickEventBubbling: true, renderCell: (params) => getRowButton(params) }
     ]
 
@@ -134,6 +134,7 @@ const ClientsPage = () => {
 
     return (
         <div style={{ width: 'auto', margin: '20px' }}>
+            <h1 style={{ display: 'flex', justifyContent: 'center', fontFamily: 'Ubuntu', fontSize: '35px', marginTop: '0px', marginBottom: '20px' }}>CLIENTS</h1>
             <Dialog
                 open={showModal}
                 maxWidth='xs'
@@ -141,7 +142,7 @@ const ClientsPage = () => {
                 onBackdropClick={() => setShowModal(false)}
                 onEscapeKeyDown={() => setShowModal(false)}
             >
-                <DialogTitle>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>
                     {isEdit ? "EDIT CLIENT" : "ADD CLIENT"}
                 </DialogTitle>
                 <DialogContent>

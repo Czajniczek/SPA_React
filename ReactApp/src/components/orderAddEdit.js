@@ -109,6 +109,7 @@ const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 id='clientId'
                                 as='select'
                             >
+                                <option value={0} key={''}>---</option>
                                 {
                                     clients.map((client, index) => {
                                         return (
@@ -124,6 +125,7 @@ const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 id='bookId'
                                 as='select'
                             >
+                                <option value={0} key={''}>---</option>
                                 {
                                     books.map((book, index) => {
                                         return (
@@ -139,42 +141,6 @@ const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 label='Count'
                                 margin='normal'
                             />
-
-                            {/* <FormControl className={classes.formControl}>
-                                <InputLabel id="clientId-label">Client</InputLabel>
-                                <Select
-                                    labelId="clientId-label"
-                                    id="clientId"
-                                    value={formik.values.clientId}
-                                    onChange={(_event, value) => formik.setFieldValue('clientId', value)}
-                                >
-                                    {
-                                        clients.map((value, index) => {
-                                            return (
-                                                <MenuItem value={value.clientId} key={`client-${index}`}>{value.name} {value.surname}</MenuItem>
-                                            )
-                                        })
-                                    }
-                                </Select>
-                            </FormControl>
-                            <FormControl className={classes.formControl}>
-                                <InputLabel id="bookId-label">Book</InputLabel>
-                                <Select
-                                    labelId="bookId-label"
-                                    id="bookId"
-                                    value={formik.values.bookId}
-                                    onChange={(_event, value) => formik.setFieldValue('bookId', value)}
-                                >
-                                    {
-                                        books.map((value, index) => {
-                                            return (
-                                                <MenuItem value={value.bookId} key={`book-${index}`}>{value.title}</MenuItem>
-                                            )
-                                        })
-                                    }
-                                </Select>
-                            </FormControl> */}
-
                             <Button
                                 style={{ marginTop: 20, width: '120px', marginLeft: 'auto', marginRight: 'auto' }}
                                 type='submit'
