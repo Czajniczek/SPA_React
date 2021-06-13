@@ -82,7 +82,12 @@ namespace WebApi.Controllers
                 }
             }
 
-            return NoContent();
+            var data = await _context.Orders
+                .Include(x => x.Client)
+                .Include(x => x.Book)
+                .FirstOrDefaultAsync(x => x.OrderId == order.OrderId);
+
+            return Ok(data);
         }
 
         // POST: api/Orders
@@ -93,7 +98,13 @@ namespace WebApi.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+            var data = await _context.Orders
+            .Include(x => x.Client)
+            .Include(x => x.Book)
+            .FirstOrDefaultAsync(x => x.OrderId == order.OrderId);
+
+            return Ok(data);
+            //return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
         // DELETE: api/Orders/5

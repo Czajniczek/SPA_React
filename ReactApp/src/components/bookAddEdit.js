@@ -90,11 +90,12 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 label='Author'
                                 margin='normal'
                             />
-                            {/* <label htmlFor='category'>Category</label> */}
+                            <label htmlFor='category' style={{ marginTop: '10px', marginBottom: '10px', color: 'rgba(0, 0, 0, 0.54)', padding: '0px', fontSize: '1rem', fontFamily: 'Roboto, Helvetica, Arial, sans-serif', fontWeight: '400', lineHeight: '1', letterSpacing: '0.00938em', transform: 'translate(0, 1.5px) scale(0.75)', transformOrigin: 'top left' }}>Category</label>
                             <Field
                                 name='category'
                                 id='category'
                                 as='select'
+                                style={{ padding: '5px', fontSize: '15px' }}
                             >
                                 {
                                     categories.map((elem, index) => {
@@ -111,6 +112,7 @@ const BookAddEdit = ({ initValues, isEdit, closeModal }) => {
                                 label='Cost'
                                 margin='normal'
                             />
+                            <label htmlFor='publicationDate' style={{ marginTop: '10px', marginBottom: '10px', color: 'rgba(0, 0, 0, 0.54)', padding: '0px', fontSize: '1rem', fontFamily: 'Roboto, Helvetica, Arial, sans-serif', fontWeight: '400', lineHeight: '1', letterSpacing: '0.00938em', transform: 'translate(0, 1.5px) scale(0.75)', transformOrigin: 'top left' }}>Publication date</label>
                             <MuiPickersUtilsProvider
                                 locale={pl}
                                 utils={DateFnsUtils}

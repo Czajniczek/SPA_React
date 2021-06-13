@@ -1,40 +1,77 @@
 //#region Imports
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import * as Yup from 'yup'
 import SaveIcon from '@material-ui/icons/Save'
-import { Form, Formik } from 'formik'
-import { FormikTextField } from 'formik-material-fields'
+import { Form, Formik, Field } from 'formik'
 import { Button } from '@material-ui/core'
 import { apiClient } from '../apiClient/apiClient'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { FormikTextField } from 'formik-material-fields'
 //#endregion Imports
 
 //#region Main function
 const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
+    //#region Hooks
+    const [clients, setClient] = useState([])
+    const [books, setBook] = useState([])
+    const [clientsIsLoading, setClientsIsLoading] = useState(false)
+    const [booksIsLoading, setBooksIsLoading] = useState(false)
+    //#endregion Hooks
+
+    //#region Load data from API
+    useEffect(() => {
+        apiClient.get("/api/Books")
+            .then(resp => {
+                const { data } = resp
+                setBook(data)
+                setBooksIsLoading(true)
+            })
+            .catch(err => console.log(err))
+    }, [])
+
+    useEffect(() => {
+        apiClient.get("/api/Clients")
+            .then(resp => {
+                const { data } = resp
+                setClient(data)
+                setClientsIsLoading(true)
+            })
+            .catch(err => console.log(err))
+    }, [])
+
+    if (!clientsIsLoading || !booksIsLoading) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress style={{ height: 80, width: 80 }} />
+                <h3>Loading data ...</h3>
+            </div>
+        )
+    }
+    //#endregion Load data from API
+
     //#region Form
-    console.log(initValues)
-    console.log(isEdit)
-    console.log(closeModal)
+    // console.log(initValues)
+    // console.log(isEdit)
+    // console.log(closeModal)
 
     const initialValues = {
-        clientName: initValues.client?.name + " " + initValues.client?.surname,
-        bookTitle: initValues.book?.title,
+        clientId: initValues.client?.clientId ?? 0,
+        bookId: initValues.book?.bookId ?? 0,
         orderDate: new Date(),
-        count: initValues.count ?? 0,
-        cost: initValues.book?.cost ?? 0,
-        total: initValues.count * initValues.book?.cost ?? 0
+        count: initValues.count
     }
 
     const validationSchema = Yup.object({
-        clientName: Yup.string().required("Client is required!"),
-        bookTitle: Yup.string().required("Book is required!"),
-        count: Yup.number().moreThan(0, "The number of books must be greater than 0!").required("Count is required!"),
+        clientId: Yup.number().moreThan(0).required("Client is required!"),
+        bookId: Yup.number().moreThan(0).required("Book is required!"),
+        count: Yup.number().moreThan(0).required("Count is required")
     })
     //#endregion Form
 
     //#region Submit form
     const submitForm = values => {
         if (isEdit) {
-            apiClient.put(`/api/Orders/${initValues.orderId}`, { ...initValues, ...values })
+            apiClient.put(`/api/Orders/${initValues.orderId}`, { ...values, orderId: initValues.orderId })
                 .then(resp => {
                     if (resp.status === 200) {
                         const { data } = resp
@@ -62,44 +99,81 @@ const OrderAddEdit = ({ initValues, isEdit, closeModal }) => {
         >
             {
                 formik => {
-                    // console.log(formik)
+                    //console.log(formik)
                     return (
                         <Form style={{ marginBottom: '16px', background: 'white', display: 'flex', flexDirection: 'column' }}>
+                            <label htmlFor='cliendId' style={{ marginTop: '10px', marginBottom: '10px', color: 'rgba(0, 0, 0, 0.54)', padding: '0px', fontSize: '1rem', fontFamily: 'Roboto, Helvetica, Arial, sans-serif', fontWeight: '400', lineHeight: '1', letterSpacing: '0.00938em', transform: 'translate(0, 1.5px) scale(0.75)', transformOrigin: 'top left' }}>Client name</label>
+                            <Field
+                                style={{ padding: '5px', fontSize: '15px' }}
+                                name='clientId'
+                                id='clientId'
+                                as='select'
+                            >
+                                {
+                                    clients.map((client, index) => {
+                                        return (
+                                            <option value={client.clientId} key={index}>{client.name} {client.surname}</option>
+                                        )
+                                    })
+                                }
+                            </Field>
+                            <label htmlFor='bookId' style={{ marginTop: '10px', marginBottom: '10px', color: 'rgba(0, 0, 0, 0.54)', padding: '0px', fontSize: '1rem', fontFamily: 'Roboto, Helvetica, Arial, sans-serif', fontWeight: '400', lineHeight: '1', letterSpacing: '0.00938em', transform: 'translate(0, 1.5px) scale(0.75)', transformOrigin: 'top left' }}>Book</label>
+                            <Field
+                                style={{ padding: '5px', fontSize: '15px' }}
+                                name='bookId'
+                                id='bookId'
+                                as='select'
+                            >
+                                {
+                                    books.map((book, index) => {
+                                        return (
+                                            <option value={book.bookId} key={index}>{book.title}</option>
+                                        )
+                                    })
+                                }
+                            </Field>
                             <FormikTextField
-                                type='text'
-                                id='name'
-                                name='name'
-                                label='Name'
+                                type='number'
+                                id='count'
+                                name='count'
+                                label='Count'
                                 margin='normal'
                             />
-                            <FormikTextField
-                                type='text'
-                                id='surname'
-                                name='surname'
-                                label='Surname'
-                                margin='normal'
-                            />
-                            <FormikTextField
-                                type='text'
-                                id='adress'
-                                name='adress'
-                                label='Adress'
-                                margin='normal'
-                            />
-                            <FormikTextField
-                                type='text'
-                                id='phoneNumber'
-                                name='phoneNumber'
-                                label='Phone number'
-                                margin='normal'
-                            />
-                            <FormikTextField
-                                type='text'
-                                id='email'
-                                name='email'
-                                label='E-mail'
-                                margin='normal'
-                            />
+
+                            {/* <FormControl className={classes.formControl}>
+                                <InputLabel id="clientId-label">Client</InputLabel>
+                                <Select
+                                    labelId="clientId-label"
+                                    id="clientId"
+                                    value={formik.values.clientId}
+                                    onChange={(_event, value) => formik.setFieldValue('clientId', value)}
+                                >
+                                    {
+                                        clients.map((value, index) => {
+                                            return (
+                                                <MenuItem value={value.clientId} key={`client-${index}`}>{value.name} {value.surname}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="bookId-label">Book</InputLabel>
+                                <Select
+                                    labelId="bookId-label"
+                                    id="bookId"
+                                    value={formik.values.bookId}
+                                    onChange={(_event, value) => formik.setFieldValue('bookId', value)}
+                                >
+                                    {
+                                        books.map((value, index) => {
+                                            return (
+                                                <MenuItem value={value.bookId} key={`book-${index}`}>{value.title}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl> */}
                             <Button
                                 style={{ marginTop: 20, width: '120px', marginLeft: 'auto', marginRight: 'auto' }}
                                 type='submit'
