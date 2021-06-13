@@ -22,9 +22,9 @@ const ClientAddEdit = ({ initValues, isEdit, closeModal }) => {
     const validationSchema = Yup.object({
         name: Yup.string().max(20, "The maximum length of the title is 20 characters!").required("Name is required!"),
         surname: Yup.string().max(30, "The maximum length of the surname is 30 characters!").required("Surname is required!"),
-        adress: Yup.string().max(30, "The maximum length of the adress is 20 characters!").required("Adress is required!"),
+        adress: Yup.string().max(30, "The maximum length of the adress is 30 characters!").required("Adress is required!"),
         phoneNumber: Yup.string().max(9, "The phone number must consist of 9 digits!").min(9, "The phone number must consist of 9 digits!").required("Phone number is required!"),
-        email: Yup.string().max(30, "The maximum length of the e-mail is 20 characters!").required("E-mail is required!"),
+        email: Yup.string().email("The e-mail address is incorrect!").max(30, "The maximum length of the e-mail is 30 characters!").required("E-mail is required!"),
     })
     //#endregion Form
 
