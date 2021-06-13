@@ -47,7 +47,7 @@ const OrdersPage = () => {
     const columns = [
         // { field: 'id', headerName: 'ID', width: 100, headerAlign: 'center', align: 'center' },
         { field: 'clientName', headerName: 'Client', width: 250, type: 'string', headerAlign: 'center', align: 'center' },
-        { field: 'bookTitle', headerName: 'Book', width: 260, type: 'string', headerAlign: 'center', align: 'center' },
+        { field: 'bookTitle', headerName: 'Book', width: 280, type: 'string', headerAlign: 'center', align: 'center' },
         { field: 'orderDate', headerName: 'Order date', width: 150, type: 'date', headerAlign: 'center', align: 'center' },
         { field: 'count', headerName: 'Count', width: 120, type: 'number', headerAlign: 'center', align: 'center' },
         {
@@ -148,6 +148,7 @@ const OrdersPage = () => {
 
     return (
         <div style={{ width: 'auto', margin: '20px' }}>
+            <h1 style={{ display: 'flex', justifyContent: 'center', fontFamily: 'Ubuntu', fontSize: '35px', marginTop: '0px', marginBottom: '20px' }}>ORDERS</h1>
             <Dialog
                 open={showModal}
                 maxWidth='xs'
@@ -155,7 +156,7 @@ const OrdersPage = () => {
                 onBackdropClick={() => setShowModal(false)}
                 onEscapeKeyDown={() => setShowModal(false)}
             >
-                <DialogTitle>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>
                     {isEdit ? "EDIT ORDER" : "ADD ORDER"}
                 </DialogTitle>
                 <DialogContent>

@@ -1,6 +1,6 @@
 //#region Imports
 import { BrowserRouter, Route } from 'react-router-dom'
-import SearchBar from "./components/searchBar"
+import NavBar from "./components/navBar"
 import MainPage from "./components/mainPage"
 import ClientsPage from "./components/clientsPage"
 import OrdersPage from "./components/ordersPage"
@@ -14,7 +14,7 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        <SearchBar />
+        <NavBar />
         <Route exact path="/" component={MainPage} />
         <Route exact path="/Clients" component={ClientsPage} />
         <Route exact path="/Orders" component={OrdersPage} />
